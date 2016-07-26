@@ -204,44 +204,11 @@ int Axis::getCurrentPosition() {
     return current_position;
 }
 
-void Axis::calibrateAxis(int torque_mode) {
-
-    switch (torque_mode){
-        case 1: torqueMode = HIGH_T; break;
-        case 2: torqueMode = MED_T; break;
-        case 3: torqueMode = LOW_T; break;
-        default: torqueMode = LOW_T; break;
-    }
-
-    Serial.println("Move the axis to zero.  Enter 'DONE' when finished");
-    String response;
-    while (Serial.available()){
-        delay(3);
-        if (Serial.available()){
-            char c = Serial.read();
-            response += c;
-        }
-    }
-    if (response == "DONE" or response == "done"){
-        response = "";
-        current_position = 0;
-        for (int i = 0; i < 100; i++){
-            current_position++;
-            this->_plus(torqueMode);
-        }
-
-        Serial.println("Measure the distance moved (in cm) and enter it here:");
-        while (Serial.available()){
-          delay(3);
-          if (Serial.available()){
-            char c = Serial.read();
-            response += c;
-          }
-        }
-
-        float distance = response.toFloat();
-        distPerStep = distance/100.0;
-    }
+void Axis::calibrateAxis(float dist_cm) {
+    distPerStep = dist_cm/100.0;
+    Serial.print("Calibrated! 1 step = ");
+    Serial.print(distPerStep);
+    Serial.println(" cm");
 }
 
 String Axis::moveDistance(float dist_cm, int torque_mode, bool plus) {

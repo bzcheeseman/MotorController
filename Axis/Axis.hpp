@@ -10,10 +10,10 @@
 #include <string.h>
 
 /*
- * TODO: Implement logging somehow
- * TODO: Implement Axis calibration - we have positions correlated to steps now, just gotta calibrate it.
  * TODO: Fix the documentation to be useful in Axis files and MotorController.ino
- * TODO: Fix doxygen output to actually show my docs
+ * TODO: Fix python interface
+ * TODO: decide on something for the calibration interface
+ * TODO: get the damn endstops, manual calibration is awful
  */
 
 /**
@@ -133,10 +133,9 @@ public:
      * Allows us to calibrate the axis steps to a distance.  Assumes full step mode.  This WILL depend on which
      * motor is used.  Calibration should be done in cm for completeness.
      *
-     * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
-     *                    Unsure if the calibration will depend on this, but it's worth adding here anyway.
+     * @param dist_cm How far the axis moved in cm after moving 100 steps
      */
-    void calibrateAxis(int torque_mode);
+    void calibrateAxis(float dist_cm);
 
     /**
      *
