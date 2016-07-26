@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['loop',['loop',['../_motor_controller___motor_controller_8ino_8cpp.html#afe461d27b9c48d5921c00d521181f12f',1,'MotorController_MotorController.ino.cpp']]]
+  ['_5fminus',['_minus',['../class_axis.html#a644b005ae9f6d400712da5b62858c95e',1,'Axis']]],
+  ['_5fplus',['_plus',['../class_axis.html#a61d871e7e8dc28996c0db08496462dd8',1,'Axis']]]
 ];

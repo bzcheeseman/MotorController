@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['usbcore_2ecpp_2ed',['USBCore.cpp.d',['../mega___c_o_r_e_8dir_2_c___2_program___files___07x86_08_2_arduino_2hardware_2arduino_2avr_2cores_2arduino_2_u_s_b_core_8cpp_8d.html',1,'']]],
-  ['usbcore_2ecpp_2ed',['USBCore.cpp.d',['../mega_a_d_k___c_o_r_e_8dir_2_c___2_program___files___07x86_08_2_arduino_2hardware_2arduino_2avr_223724c8e2576541e20c78c6d202591f9.html',1,'']]]
+  ['torquemode',['torqueMode',['../class_axis.html#a1313fc26027ba3f0bf519346e529b1c3',1,'Axis']]],
+  ['torquemode_5ft',['torqueMode_t',['../class_axis.html#a7721d3f7de2b450a36b5c5151d60e1e4',1,'Axis']]]
 ];
