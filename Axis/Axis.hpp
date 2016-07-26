@@ -119,6 +119,8 @@ public:
      * @param steps The number of steps we want to move (ideally)
      * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
      * @param plus If true, then we use the _plus(torqueMode_t) routine, if false, we use the _minus(torqueMode_t) routine.
+     *
+     * @returns Logging string that contains everything executed (that was set up).
      */
     String moveAlongAxis(int steps, int torque_mode, bool plus);
 
@@ -130,6 +132,13 @@ public:
     int getCurrentPosition();
 
     /**
+     * Takes the motor home (to position zero)
+     *
+     * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
+     */
+    void Home(int torque_mode);
+
+    /**
      * Allows us to calibrate the axis steps to a distance.  Assumes full step mode.  This WILL depend on which
      * motor is used.  Calibration should be done in cm for completeness.
      *
@@ -138,9 +147,14 @@ public:
     void calibrateAxis(float dist_cm);
 
     /**
+     * Moves the carriage a certain distance according to the given calibration.
      *
+     * @param dist_cm Distance to move
+     * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
+     * @param plus Controls the direction.  @see moveAlongAxis(int,int,bool)
+     * @return Logging string that describes the actions.  @see moveAlongAxis(int,int,bool)
      */
-    String moveDistance(float dist_cm, int torque_mode, bool plus);
+    String moveDistance(float dist_cm, int torque_mode, bool plus, bool calibrated);
 
 };
 
