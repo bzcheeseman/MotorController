@@ -34,6 +34,9 @@ private:
 
     //! Holds the current position of the stage
     int current_position;
+
+    //! Holds the distance per step
+    float distPerStep;
 public:
     /**
      * Class constructor - sets up the pins properly and a short message alerting the user that the motor was
@@ -65,12 +68,14 @@ public:
     ~Axis();
 
 private:
-    //! Need two pins for this, step occurs when we take one from high to low.
+    //! Need two pins for stepping, dirPin high means one direction, dirPin low means the other.
     const unsigned int dirPin;
+    //! Need two pins for stepping, stepPin high then low indicates one step with dirPin indicating direction.
     const unsigned int stepPin;
 
-    //! Sleep and reset pins - drive reset high to bring the board open
+    //! Reset pin, drive resetPin to the value of sleepPin to put board in sleep mode.
     const unsigned int resetPin;
+    //! Read in value of sleepPin and use it to drive resetPin.
     const unsigned int sleepPin;
 
     //! Sets the id of the stepper - x, y, z, etc.
@@ -103,17 +108,19 @@ public:
      * so that we don't need to specify which axis here.
      *
      * @param numSteps The number of steps to take
-     * @param torqueMode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
+     * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
      * @param plus If true, then we use the _plus(torqueMode_t) routine, if false, we use the _minus(torqueMode_t) routine.
      */
-    void Steps(int numSteps, int torqueMode, bool plus);
+    void Steps(int numSteps, int torque_mode, bool plus);
 
     /**
      * Tells the motor to move a certain distance.  Assumes we start at zero.
      *
-     * @param steps the number of steps we want to move (ideally)
+     * @param steps The number of steps we want to move (ideally)
+     * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
+     * @param plus If true, then we use the _plus(torqueMode_t) routine, if false, we use the _minus(torqueMode_t) routine.
      */
-    void moveAlongAxis(int steps, int torqueMode, bool plus);
+    String moveAlongAxis(int steps, int torque_mode, bool plus);
 
     /**
      * Gets the current position of the motor.
@@ -121,6 +128,21 @@ public:
      * @return current_position
      */
     int getCurrentPosition();
+
+    /**
+     * Allows us to calibrate the axis steps to a distance.  Assumes full step mode.  This WILL depend on which
+     * motor is used.  Calibration should be done in cm for completeness.
+     *
+     * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
+     *                    Unsure if the calibration will depend on this, but it's worth adding here anyway.
+     */
+    void calibrateAxis(int torque_mode);
+
+    /**
+     *
+     */
+    String moveDistance(float dist_cm, int torque_mode, bool plus);
+
 };
 
 

@@ -31,23 +31,25 @@ void loop() {
     }
 
     if (numSteps.length() > 0) {
+        String log;
         Serial.println(numSteps);
         if (numSteps.substring(0, 1) == "-") {
             Serial.println("Got a minus - using minus");
 //            digitalWrite(52, HIGH);
             int steps = numSteps.substring(1).toInt();
-            stepper.moveAlongAxis(steps, 3, false);
+            log = stepper.moveAlongAxis(steps, 3, false);
 //            digitalWrite(52, LOW);
         }
         else {
             Serial.println("Didn't get a minus - using plus");
 //            digitalWrite(52, HIGH);
             int steps = numSteps.toInt();
-            stepper.moveAlongAxis(steps, 3, true);
+            log = stepper.moveAlongAxis(steps, 3, true);
 //            digitalWrite(52, LOW);
 
         }
-
+        Serial.println("LOGGING");
+        Serial.println(log);
         numSteps = "";
     }
 }
