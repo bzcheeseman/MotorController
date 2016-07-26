@@ -8,7 +8,10 @@
  * @file Axis.cpp
  * @copybrief Axis.hpp
  *
- * other stuff here
+ * MotorController - Controlling basic NEMA-17 stepper motors with an arduino.
+ * Copyright (C) 2016  Aman LaChapelle
+ *
+ * Full Notice at MotorController/LICENSE.txt
  */
 
 Axis::Axis(int axisLen, int dirPin, int stepPin, int resetPin, int sleepPin, char id):
