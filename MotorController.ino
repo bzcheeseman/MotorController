@@ -16,6 +16,7 @@ Axis stepper(1450, 3, 4, 52, 53, 'Y');
 
 void setup() {
     Serial.begin(9600);
+    //stepper.calibrateAxis(3);
 }
 
 void loop() {

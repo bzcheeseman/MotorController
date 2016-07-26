@@ -155,7 +155,7 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
                 log += " steps.\nCurrent position = ";
                 log += current_position;
                 log += "\n";
-                break;
+                return log;
             }
             else{
                 this->_plus(torqueMode);
@@ -183,7 +183,7 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
                 log += " steps.\nCurrent position = ";
                 log += current_position;
                 log += "\n";
-                break;
+                return log;
             }
             else{
                 this->_minus(torqueMode);

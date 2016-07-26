@@ -6,9 +6,9 @@ project(${PROJECT_NAME})
 find_package(Doxygen)
 
 if(DOXYGEN_FOUND)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile_mac @ONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile @ONLY)
     add_custom_target(doc
-            ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile_mac
+            ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             COMMENT "Generating API documentation with Doxygen" VERBATIM
             )
@@ -24,5 +24,3 @@ LINK_DIRECTORIES(C://Arduino//libraries)
 
 set(${CMAKE_PROJECT_NAME}_SKETCH MotorController.ino)
 generate_arduino_firmware(${CMAKE_PROJECT_NAME})
-
-execute_process(COMMAND python ${CMAKE_SOURCE_DIR}/scripts/serialLogging.py ${CMAKE_PROJECT_NAME}_PORT)

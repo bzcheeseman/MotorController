@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['platform_5fid',['PLATFORM_ID',['../_c_make_c_compiler_id_8c.html#adbc5372f40838899018fadbc89bd588b',1,'PLATFORM_ID():&#160;CMakeCCompilerId.c'],['../_c_make_c_x_x_compiler_id_8cpp.html#adbc5372f40838899018fadbc89bd588b',1,'PLATFORM_ID():&#160;CMakeCXXCompilerId.cpp']]],
-  ['pluggableusb_2ecpp_2ed',['PluggableUSB.cpp.d',['../mega_a_d_k___c_o_r_e_8dir_2_c___2_program___files___07x86_08_2_arduino_2hardware_2arduino_2avr_285b64f2b77f690de6f2a850cf6eba342.html',1,'']]],
-  ['pluggableusb_2ecpp_2ed',['PluggableUSB.cpp.d',['../mega___c_o_r_e_8dir_2_c___2_program___files___07x86_08_2_arduino_2hardware_2arduino_2avr_2cores_a534b84935cf50a0f89b89d770fc5b64.html',1,'']]],
-  ['print_2ecpp_2ed',['Print.cpp.d',['../mega___c_o_r_e_8dir_2_c___2_program___files___07x86_08_2_arduino_2hardware_2arduino_2avr_2cores_2arduino_2_print_8cpp_8d.html',1,'']]],
-  ['print_2ecpp_2ed',['Print.cpp.d',['../mega_a_d_k___c_o_r_e_8dir_2_c___2_program___files___07x86_08_2_arduino_2hardware_2arduino_2avr_2cores_2arduino_2_print_8cpp_8d.html',1,'']]]
+  ['torquemode',['torqueMode',['../class_axis.html#a1313fc26027ba3f0bf519346e529b1c3',1,'Axis']]],
+  ['torquemode_5ft',['torqueMode_t',['../class_axis.html#a7721d3f7de2b450a36b5c5151d60e1e4',1,'Axis']]]
 ];

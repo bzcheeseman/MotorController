@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['feature_5ftests_2ec',['feature_tests.c',['../feature__tests_8c.html',1,'']]],
-  ['feature_5ftests_2ecxx',['feature_tests.cxx',['../feature__tests_8cxx.html',1,'']]],
-  ['features',['features',['../feature__tests_8c.html#a1582568e32f689337602a16bf8a5bff0',1,'features():&#160;feature_tests.c'],['../feature__tests_8cxx.html#a1582568e32f689337602a16bf8a5bff0',1,'features():&#160;feature_tests.cxx']]]
+  ['dirpin',['dirPin',['../class_axis.html#af16e4d2a2ed7d13551a244349b4f3f23',1,'Axis']]],
+  ['distperstep',['distPerStep',['../class_axis.html#a7ee316d5547023aa99e1af06c6952802',1,'Axis']]]
 ];
