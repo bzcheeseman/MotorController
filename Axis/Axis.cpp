@@ -211,8 +211,30 @@ void Axis::calibrateAxis(float dist_cm) {
     Serial.println(" cm");
 }
 
-String Axis::moveDistance(float dist_cm, int torque_mode, bool plus) {
-  int steps = round(dist_cm * distPerStep);
-  String output = moveAlongAxis(steps, torque_mode, plus);
-  return output;
+String Axis::moveDistance(float dist_cm, int torque_mode, bool plus, bool calibrated) {
+    if (calibrated){
+        int steps = round(dist_cm * distPerStep);
+        String output = moveAlongAxis(steps, torque_mode, plus);
+        return output;
+    }
+    else{
+        Serial.println("Not calibrated, distance has no meaning right now!");
+        return "Uncalibrated - ERROR";
+    }
+}
+
+void Axis::Home(int torque_mode) {
+
+    switch (torque_mode){
+        case 1: torqueMode = HIGH_T; break;
+        case 2: torqueMode = MED_T; break;
+        case 3: torqueMode = LOW_T; break;
+        default: torqueMode = LOW_T; break;
+    }
+
+    for (int i = 0; i < current_position; i++){
+        //Update current position
+        current_position--;
+        this->_minus(torqueMode);
+    }
 }
