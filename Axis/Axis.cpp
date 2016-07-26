@@ -125,7 +125,7 @@ void Axis::Steps(int numSteps, int torque_mode, bool plus){
 
 }
 
-void Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
+String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
 
     String log;
     log += "Steps = ";
@@ -168,7 +168,7 @@ void Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
         log += " steps.\nCurrent position = ";
         log += current_position;
         log += "\n";
-        return;
+        return log;
     }
     else{
         for (int i = 0; i < numSteps; i++){
@@ -196,10 +196,56 @@ void Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
         log += " steps.\nCurrent position = ";
         log += current_position;
         log += "\n";
-        return;
+        return log;
     }
 }
 
 int Axis::getCurrentPosition() {
     return current_position;
+}
+
+void Axis::calibrateAxis(int torque_mode) {
+
+    switch (torque_mode){
+        case 1: torqueMode = HIGH_T; break;
+        case 2: torqueMode = MED_T; break;
+        case 3: torqueMode = LOW_T; break;
+        default: torqueMode = LOW_T; break;
+    }
+
+    Serial.println("Move the axis to zero.  Enter 'DONE' when finished");
+    String response;
+    while (Serial.available()){
+        delay(3);
+        if (Serial.available()){
+            char c = Serial.read();
+            response += c;
+        }
+    }
+    if (response == "DONE" or response == "done"){
+        response = "";
+        current_position = 0;
+        for (int i = 0; i < 100; i++){
+            current_position++;
+            this->_plus(torqueMode);
+        }
+
+        Serial.println("Measure the distance moved (in cm) and enter it here:");
+        while (Serial.available()){
+          delay(3);
+          if (Serial.available()){
+            char c = Serial.read();
+            response += c;
+          }
+        }
+
+        float distance = response.toFloat();
+        distPerStep = distance/100.0;
+    }
+}
+
+String Axis::moveDistance(float dist_cm, int torque_mode, bool plus) {
+  int steps = round(dist_cm * distPerStep);
+  String output = moveAlongAxis(steps, torque_mode, plus);
+  return output;
 }
