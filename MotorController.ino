@@ -6,7 +6,10 @@
  * @file MotorController.ino
  * @brief The Arudino file
  *
- * more stuff here
+ * MotorController - Controlling basic NEMA-17 stepper motors with an arduino.
+ * Copyright (C) 2016  Aman LaChapelle
+ *
+ * Full Notice at MotorController/LICENSE.txt
  */
 
 Axis stepper(1450, 3, 4, 52, 53, 'Y');

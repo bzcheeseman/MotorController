@@ -20,7 +20,10 @@
  * @file Axis.hpp
  * @brief Holds the declarations for the Axis class, which controls motor movement along one axis.
  *
- * stuff here
+ * MotorController - Controlling basic NEMA-17 stepper motors with an arduino.
+ * Copyright (C) 2016  Aman LaChapelle
+ *
+ * Full Notice at MotorController/LICENSE.txt
  */
 
 class Axis {
