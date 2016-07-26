@@ -16,7 +16,18 @@ Axis stepper(1450, 3, 4, 52, 53, 'Y');
 
 void setup() {
     Serial.begin(9600);
-    //stepper.calibrateAxis(3);
+    delay(2000);
+    stepper.Steps(100, 3, true);
+    Serial.println("Enter the distance moved in cm");
+    delay(5000);
+    String dist;
+    while (Serial.available()){
+        if (Serial.available()){
+            char c = Serial.read();
+            dist += c;
+        }
+    }
+    stepper.calibrateAxis(dist.toFloat());
 }
 
 void loop() {

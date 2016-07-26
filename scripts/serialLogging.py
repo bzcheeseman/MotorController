@@ -8,13 +8,11 @@ from time import strftime
 @brief Logging module for the serial port
 '''
 
-def log(port):
+def log(port, serial):
     try:
         os.chdir("../logging")
     except:
         os.mkdir("../logging")
-
-    serial = serial.Serial(port, 9600)
 
     try:
         f = open("log_"+strftime("%Y%m%d_%I%M")+".txt", "w")
@@ -31,4 +29,5 @@ def log(port):
             f.close()
     except serial.SerialException:
         pass
+    os.chdir("..")
 
