@@ -12,8 +12,8 @@
 /*
  * TODO: Fix the documentation to be useful in Axis files and MotorController.ino
  * TODO: Fix python interface
- * TODO: decide on something for the calibration interface
- * TODO: get the damn endstops, manual calibration is awful
+ * TODO: Hope the current thing works, test it when possible (when endstops come in)
+ * TODO: get the endstops and test out the calibration interface
  */
 
 /**
@@ -45,20 +45,21 @@ public:
      * Sets the axis parameter such that the first entry and the last entry are ones, the rest are zeros.  We
      * determine the end by ANDing a 1 with the current position and if the AND returns 1 then we know to end.
      *
-     * Assumes we start at position 0.
+     * Uses pin 13 as the reference pin for the endstop switches.  We set it to high to calibrate and then turn it off again.
      *
-     * @param axisLen Total number of steps along the axis
      * @param dirPin Reference pin, determines which direction the stepper steps.  This is dependent on how the motor
      *               is connected to the driver.
      * @param stepPin Cycle this pin to step the motor
      * @param resetPin If this pin is different from sleepPin the motor is in sleep mode.  If they are the same,
      *                 (AKA both HIGH) then the motor will turn on and step actively
      * @param sleepPin This pin is set by the board and we read it in to know how to set resetPin.
+     * @param stopPin_plus This pin is an input pin that is read in to find the stop position on the positive end of the axis.
+     * @param stopPin_minus This pin is an input pin that is read in to find the stop position on the negative end of the axis.
      * @param id An identifier for each motor.  Easiest if it corresponds to the motor's axis of control.
      * @return void
      */
 
-    Axis(int axisLen, int dirPin, int stepPin, int resetPin, int sleepPin, char id);
+    Axis(int dirPin, int stepPin, int resetPin, int sleepPin, int stopPin_plus, int stopPin_minus, char id);
 
     /**
      * Class destructor
@@ -78,6 +79,11 @@ private:
     //! Read in value of sleepPin and use it to drive resetPin.
     const unsigned int sleepPin;
 
+    //! Pin that reads in the endstop voltage and references it to HIGH on the minus side
+    const unsigned int stopPin_minus;
+    //! Pin that reads in the endstop voltage and references it to HIGH on the plus side
+    const unsigned int stopPin_plus;
+
     //! Sets the id of the stepper - x, y, z, etc.
     const char id;
     //! Selects the mode of the motor - high torque, medium or low
@@ -89,6 +95,9 @@ private:
 
     //! Torque mode of the motor, one of the items in the enum torqueMode_t
     torqueMode_t torqueMode;
+
+    //! Since the calibration sets the length of the axis we need to do that first.
+    bool calibrated;
 
     /**
      * Individual method for movement in the plus/minus direction
@@ -102,7 +111,7 @@ private:
      * @copydoc _plus(torqueMode_t)
      */
     void _minus(torqueMode_t torque_mode);
-public:
+
     /**
      * Simple interface for taking some nubmer of steps in either the plus or minus direction.  Specific to each stepper
      * so that we don't need to specify which axis here.
@@ -113,6 +122,7 @@ public:
      */
     void Steps(int numSteps, int torque_mode, bool plus);
 
+public:
     /**
      * Tells the motor to move a certain distance.  Assumes we start at zero.
      *
@@ -142,7 +152,7 @@ public:
      * Allows us to calibrate the axis steps to a distance.  Assumes full step mode.  This WILL depend on which
      * motor is used.  Calibration should be done in cm for completeness.
      *
-     * @param dist_cm How far the axis moved in cm after moving 100 steps
+     * @param dist_cm Length of the axis
      */
     void calibrateAxis(float dist_cm);
 
@@ -154,7 +164,7 @@ public:
      * @param plus Controls the direction.  @see moveAlongAxis(int,int,bool)
      * @return Logging string that describes the actions.  @see moveAlongAxis(int,int,bool)
      */
-    String moveDistance(float dist_cm, int torque_mode, bool plus, bool calibrated);
+    String moveDistance(float dist_cm, int torque_mode, bool plus);
 
 };
 
