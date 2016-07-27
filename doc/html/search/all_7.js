@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['readme',['README',['../md_README.html',1,'']]],
-  ['resetpin',['resetPin',['../class_axis.html#ab9e1132f5d54ef39a48a0a2d4bc082c2',1,'Axis']]]
+  ['movealongaxis',['moveAlongAxis',['../class_axis.html#a80ada22c7a59d0c1b477ab5c5048bc97',1,'Axis']]],
+  ['movedistance',['moveDistance',['../class_axis.html#ac09146fff31b627323fbca7a2ce98ce0',1,'Axis']]]
 ];

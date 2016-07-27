@@ -14,24 +14,28 @@
  * Full Notice at MotorController/LICENSE.txt
  */
 
-Axis::Axis(int axisLen, int dirPin, int stepPin, int resetPin, int sleepPin, char id):
-        axisLen(axisLen),
+Axis::Axis(int dirPin, int stepPin, int resetPin, int sleepPin, int stopPin_plus, int stopPin_minus, char id):
         dirPin(dirPin),
         stepPin(stepPin),
         resetPin(resetPin),
         sleepPin(sleepPin),
+        stopPin_plus(stopPin_plus),
+        stopPin_minus(stopPin_minus),
         id(id) {
 
     pinMode(this->stepPin, OUTPUT);
     pinMode(this->dirPin, OUTPUT);
     pinMode(this->resetPin, OUTPUT);
     pinMode(this->sleepPin, INPUT);
+    pinMode(this->stopPin_plus, INPUT);
+    pinMode(this->stopPin_minus, INPUT);
+    pinMode(13, OUTPUT);
 
     Serial.print("Motor ");
     Serial.print(id);
     Serial.println(" Initialized");
 
-    current_position = 0;
+    calibrated = false;
 }
 
 Axis::~Axis(){
@@ -126,6 +130,13 @@ void Axis::Steps(int numSteps, int torque_mode, bool plus){
 }
 
 String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
+    if (calibrated){
+        ;
+    }
+    else{
+        Serial.println("Uncalibrated!");
+        return "ERROR - UNCALIBRATED";
+    }
 
     String log;
     log += "Steps = ";
@@ -155,6 +166,7 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
                 log += " steps.\nCurrent position = ";
                 log += current_position;
                 log += "\n";
+                digitalWrite(resetPin, LOW);
                 return log;
             }
             else{
@@ -168,6 +180,7 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
         log += " steps.\nCurrent position = ";
         log += current_position;
         log += "\n";
+        digitalWrite(resetPin, LOW);
         return log;
     }
     else{
@@ -183,6 +196,7 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
                 log += " steps.\nCurrent position = ";
                 log += current_position;
                 log += "\n";
+                digitalWrite(resetPin, LOW);
                 return log;
             }
             else{
@@ -196,6 +210,7 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
         log += " steps.\nCurrent position = ";
         log += current_position;
         log += "\n";
+        digitalWrite(resetPin, LOW);
         return log;
     }
 }
@@ -205,21 +220,35 @@ int Axis::getCurrentPosition() {
 }
 
 void Axis::calibrateAxis(float dist_cm) {
-    distPerStep = dist_cm/100.0;
-    Serial.print("Calibrated! 1 step = ");
-    Serial.print(distPerStep);
-    Serial.println(" cm");
+    digitalWrite(13, HIGH);
+    //minus direction - high means it hit the end stop
+    while (HIGH != digitalRead(stopPin_minus)){
+        this->_minus(LOW_T);
+    }
+    current_position = 0;
+
+    //Now run it to the plus direction
+    while (HIGH != digitalRead(stopPin_plus)){
+        current_position++;
+        this->_plus(LOW_T);
+    }
+    //set the length of the axis for future calibration stuff
+    axisLen = current_position;
+
+    distPerStep = dist_cm/float(current_position);
+    digitalWrite(13, LOW);
+    calibrated = true;
 }
 
-String Axis::moveDistance(float dist_cm, int torque_mode, bool plus, bool calibrated) {
+String Axis::moveDistance(float dist_cm, int torque_mode, bool plus) {
     if (calibrated){
         int steps = round(dist_cm * distPerStep);
         String output = moveAlongAxis(steps, torque_mode, plus);
         return output;
     }
     else{
-        Serial.println("Not calibrated, distance has no meaning right now!");
-        return "Uncalibrated - ERROR";
+        Serial.println("Uncalibrated!");
+        return "ERROR - UNCALIBRATED";
     }
 }
 
