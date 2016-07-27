@@ -5,6 +5,10 @@ from multiprocessing import Process, Lock
 import os
 from time import strftime
 
+'''
+https://pymotw.com/2/SocketServer/
+'''
+
 MAX_LENGTH = 4096
 PORT = 10000
 HOST = '127.0.0.1'
