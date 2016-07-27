@@ -111,7 +111,7 @@ private:
      * @copydoc _plus(torqueMode_t)
      */
     void _minus(torqueMode_t torque_mode);
-
+public:
     /**
      * Simple interface for taking some nubmer of steps in either the plus or minus direction.  Specific to each stepper
      * so that we don't need to specify which axis here.
@@ -146,7 +146,7 @@ public:
      *
      * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
      */
-    void Home(int torque_mode);
+    String Home(int torque_mode);
 
     /**
      * Allows us to calibrate the axis steps to a distance.  Assumes full step mode.  This WILL depend on which

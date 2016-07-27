@@ -135,11 +135,11 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
     }
     else{
         Serial.println("Uncalibrated!");
-        return "ERROR - UNCALIBRATED";
+        return "LOGGING: ERROR - UNCALIBRATED";
     }
 
     String log;
-    log += "Steps = ";
+    log += "LOGGING: Steps = ";
     log += numSteps;
     log += "\n";
 
@@ -161,9 +161,9 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
             if (current_position >= axisLen){
                 Serial.println("Positive Limit Reached.  Stopping at ");
                 Serial.print(current_position);
-                log += "Moved ";
+                log += "LOGGING: Moved ";
                 log += i;
-                log += " steps.\nCurrent position = ";
+                log += " steps.\nLOGGING: Current position = ";
                 log += current_position;
                 log += "\n";
                 digitalWrite(resetPin, LOW);
@@ -175,9 +175,9 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
         }
         //Log outcome
         delayMicroseconds(500);
-        log += "Moved ";
+        log += "LOGGING: Moved ";
         log += numSteps;
-        log += " steps.\nCurrent position = ";
+        log += " steps.\nLOGGING: Current position = ";
         log += current_position;
         log += "\n";
         digitalWrite(resetPin, LOW);
@@ -191,9 +191,9 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
             if (current_position <= 0){
                 Serial.print("Negative Limit Reached.  Stopping at ");
                 Serial.println(current_position);
-                log += "Moved ";
+                log += "LOGGING: Moved ";
                 log += i;
-                log += " steps.\nCurrent position = ";
+                log += " steps.\nLOGGING: Current position = ";
                 log += current_position;
                 log += "\n";
                 digitalWrite(resetPin, LOW);
@@ -205,9 +205,9 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
         }
         //Log outcome
         delayMicroseconds(500);
-        log += "Moved ";
+        log += "LOGGING: Moved ";
         log += numSteps;
-        log += " steps.\nCurrent position = ";
+        log += " steps.\nLOGGING: Current position = ";
         log += current_position;
         log += "\n";
         digitalWrite(resetPin, LOW);
@@ -248,22 +248,30 @@ String Axis::moveDistance(float dist_cm, int torque_mode, bool plus) {
     }
     else{
         Serial.println("Uncalibrated!");
-        return "ERROR - UNCALIBRATED";
+        return "LOGGING: ERROR - UNCALIBRATED";
     }
 }
 
-void Axis::Home(int torque_mode) {
+String Axis::Home(int torque_mode) {
 
-    switch (torque_mode){
-        case 1: torqueMode = HIGH_T; break;
-        case 2: torqueMode = MED_T; break;
-        case 3: torqueMode = LOW_T; break;
-        default: torqueMode = LOW_T; break;
+    if (calibrated){
+        switch (torque_mode){
+            case 1: torqueMode = HIGH_T; break;
+            case 2: torqueMode = MED_T; break;
+            case 3: torqueMode = LOW_T; break;
+            default: torqueMode = LOW_T; break;
+        }
+
+        for (int i = 0; i < current_position; i++){
+            //Update current position
+            current_position--;
+            this->_minus(torqueMode);
+        }
+    }
+    else{
+        Serial.println("Uncalibrated!");
+        return "ERROR - UNCALIBRATED";
     }
 
-    for (int i = 0; i < current_position; i++){
-        //Update current position
-        current_position--;
-        this->_minus(torqueMode);
-    }
+
 }
