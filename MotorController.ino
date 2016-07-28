@@ -12,7 +12,7 @@
  * Full Notice at MotorController/LICENSE.txt
  */
 
-Axis stepper(3, 4, 52, 53, 50, 51, 'Y');
+Axis stepper(3, 4, 52, 53, 22, 23, 'Z');
 
 void setup() {
     Serial.begin(9600);
@@ -25,11 +25,12 @@ void loop() {
     while (Serial.available()){
         delay(3);
         if (Serial.available() > 0){
-            command = Serial.readStringUntil('\0');
+            command = Serial.readStringUntil('\n');
         }
     }
 
     if (command.length() > 0){
+        Serial.println(command);
         command.toLowerCase();
         if (command.substring(0, 9) == "calibrate"){
             log += "LOGGING: Got calibrate command\n";
@@ -71,10 +72,10 @@ void loop() {
             log += stepper.getCurrentPosition();
         }
         else if (command.substring(0, 5) == "debug"){
-            log += "LOGGING: Got debug command - turning off safety checks\n";
+            Serial.println("LOGGING: Got debug command - turning off safety checks");
             String num_steps = command.substring(6);
             if (num_steps[0] == '-'){
-                log += "LOGGING: Got a minus - using minus\n";
+                Serial.println("LOGGING: Got a minus - using minus");
                 int steps = num_steps.substring(1).toInt();
                 Serial.println(steps);
                 stepper.Steps(abs(steps), 3, false);
