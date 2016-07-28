@@ -3,6 +3,7 @@ import socket
 import sys
 import time
 
+
 MAX_LENGTH = 512
 def main():
     logging.basicConfig(level=logging.DEBUG,
@@ -23,7 +24,7 @@ def main():
     s.connect((ip, port))
 
     # Send the data
-    message = 'calibrate'
+    message = 'COM8 calibrate'
     logger.debug('sending data: "%s"', message)
     len_sent = s.send(message)
 
@@ -41,7 +42,7 @@ def main():
     s.connect((ip, port))
 
     # Try an invalid message
-    message = 'hello world'
+    message = 'COM8 hello world'
     logger.debug('sending data: "%s"', message)
     len_sent = s.send(message)
 
@@ -59,7 +60,7 @@ def main():
     s.connect((ip, port))
 
     # close the server
-    s.send("close")
+    s.send('close')
 
     # Clean up
     logger.debug('closing socket')

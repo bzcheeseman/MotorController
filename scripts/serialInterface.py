@@ -27,37 +27,50 @@ class SerialRequestHandler(SocketServer.BaseRequestHandler):
 
     def setup(self):
         self.logger.debug("setup" + self.current_thread)
+        return SocketServer.BaseRequestHandler.setup(self)
+
+    def handle(self):
+        valid = ['calibrate', 'step', 'distance', 'home', 'debug', 'close', 'switch', 'reset']
+        self.logger.debug("handle" + self.current_thread)
+        cmd = self.request.recv(MAX_LENGTH)
+        
+        port = ""
+        if cmd.split(" ")[0][:3] == "COM": 
+            port = cmd.split(" ")[0]
+        elif cmd.split(" ")[0] == 'close':
+            self.logger.debug("Closing server")
+            return
+        
         try:
-            self.ino = serial.Serial("COM8", 9600, timeout=30)
+            self.ino = serial.Serial(port, 9600, timeout=30)
             while not self.ino.writable():
                 self.logger.warning("Device not writable!")
         except serial.SerialException:
             self.logger.warning("No Arduino found or incorrect port!")
             self.no_ino = True
-        return SocketServer.BaseRequestHandler.setup(self)
-
-    def handle(self):
-        valid = ['calibrate', 'step', 'distance', 'home', 'debug', 'close']
-        self.logger.debug("handle" + self.current_thread)
-        cmd = self.request.recv(MAX_LENGTH)
-        if cmd.split(" ")[0] in valid:
-            if cmd.split(" ")[0] == 'close':
-                self.logger.debug("Closing server")
-            elif self.no_ino:
-                self.logger.debug("Received command " + cmd)
-                self.request.send("ACK NO EXEC " + cmd)
+        
+        if cmd.split(" ")[1].lower() in valid:
+            to_send = " ".join(cmd.split(" ")[1:]).lower()
+            if self.no_ino:
+                self.logger.debug("Received command " + to_send)
+                self.request.send("ACK NO EXEC " + to_send)
             else:
-                self.ino.write(cmd)
-                self.logger.debug("Sent " + cmd + " to Arduino")
-                while self.ino.inWaiting() > 0:
-                    line = self.ino.readline()
-                    if line[:8] == 'LOGGING':
-                        self.logger.debug(line)
-                    else:
-                        print line
-                self.request.send("ACK " + cmd)
+                if cmd.split(" ")[1] == 'close':
+                    self.ino.close()
+                    return
+                else:
+                    self.ino.write(to_send)
+                    self.logger.debug("Sent " + to_send + " to Arduino")
+                    while self.ino.inWaiting() > 0:
+                        line = self.ino.readline()
+                        if line[:8] == 'LOGGING':
+                            self.logger.debug(line)
+                        else:
+                            print line
+                    self.request.send("ACK " + to_send)
         else:
-            reply = "Invalid Request - Valid = {'calibrate <axis length>', 'step <steps>', 'distance <dist>', 'home', 'debug <steps> - use sparingly!'}"
+            reply = "Invalid Request - Valid = {'calibrate <axis length>', 'step <steps>', 'distance <dist>', \
+            'home', 'debug <steps>' - use sparingly!, 'switch <switch>', 'reset'}"
             self.request.send(reply)
             self.logger.warning("Request: " + cmd)
             self.logger.warning("INVALID REQUEST")
@@ -69,8 +82,6 @@ class SerialRequestHandler(SocketServer.BaseRequestHandler):
         return SocketServer.BaseRequestHandler.finish(self)
 
 class SerialServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
-
-    keep_going = True
 
     def __init__(self, server_address, handler_class=SerialRequestHandler):
         self.logger = logging.getLogger('SerialServer')
@@ -94,12 +105,7 @@ class SerialServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 
     def handle_request(self):
         self.logger.debug('handle_request')
-        if self.keep_going:
-            return SocketServer.TCPServer.handle_request(self)
-        else:
-            print "Done - closing up"
-            self.shutdown()
-            self.server_close()
+        return SocketServer.TCPServer.handle_request(self)
 
     def finish_request(self, request, client_address):
         print "Finished request from ", client_address, "...Terminating Connection"
@@ -129,7 +135,7 @@ def main():
     print "Server active on {}:{}".format(ip, port)
     t = ServerThread()
     t.setDaemon(True)
-    t.run(target=server)
+    t.run(server)
 
 
 if __name__ == "__main__":
