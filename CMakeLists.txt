@@ -16,11 +16,11 @@ endif(DOXYGEN_FOUND)
 
 
 set(${CMAKE_PROJECT_NAME}_BOARD megaADK)
-set(${CMAKE_PROJECT_NAME}_PORT COM8)
+set(${CMAKE_PROJECT_NAME}_PORT /dev/tty.usbmodem1D1121)
 set(mega.build.mcu atmega2560)
 set(mega.upload.protocol wiring)
 set(mega.upload.speed 115200)
-LINK_DIRECTORIES(C://Arduino//libraries)
+#LINK_DIRECTORIES(C://Arduino//libraries)
 
 set(${CMAKE_PROJECT_NAME}_SKETCH MotorController.ino)
 generate_arduino_firmware(${CMAKE_PROJECT_NAME})
