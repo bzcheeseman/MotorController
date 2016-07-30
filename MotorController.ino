@@ -7,126 +7,132 @@
  * @brief The Arudino file
  *
  * MotorController - Controlling basic NEMA-17 stepper motors with an arduino.
+ * Written using RAII-style class allocation within each loop - should free all resources each loop iteration.
+ *
  * Copyright (C) 2016  Aman LaChapelle
  *
  * Full Notice at MotorController/LICENSE.txt
  */
 
-Axis stepper(3, 4, 52, 53, 22, 23, 'Z');
+struct axis_t {
+    const int numSteppers;
+    Axis* stepper;
+    const char* ID;
+
+    axis_t(Axis* axes, const char* ids, const int numSteppers): stepper(axes),
+                                                                  ID(ids),
+                                                                  numSteppers(numSteppers){
+        ;
+    }
+    ~axis_t(){
+        delete stepper;
+        delete ID;
+    }
+
+    Axis operator[](char which){
+        for (int i = 0; i < numSteppers; i++){
+            if (which == ID[i]){
+                Serial.println(ID[i]);
+                return stepper[i];
+            }
+            else{
+                ;
+            }
+        }
+    }
+};
+
+Axis steppers[1] = {Axis (3, 4, 52, 53, 22, 23, 'z')};
+char ids[1] = {'z'};
+axis_t* motors;
 
 void setup() {
     Serial.begin(9600);
+    while (!Serial){
+        ;
+    }
+
+
+    motors = new axis_t (steppers, ids, 1);
+    delete steppers;
+    delete ids;
 }
 
 void loop() {
 
-    String command, log;
+    String command;
 
-    while (Serial.available()){
-        delay(3);
-        if (Serial.available() > 0){
-            command = Serial.readStringUntil('\n');
-        }
+    if (Serial.available()){
+        command = Serial.readStringUntil('\n');
     }
 
     if (command.length() > 0){
         Serial.println(command);
         command.toLowerCase();
         if (command.substring(0, 9) == "calibrate"){
-            log += "LOGGING: Got calibrate command\n";
-            float axislen = command.substring(10).toFloat();
-            stepper.calibrateAxis(axislen);
+            Serial.print("LOGGING: Got calibrate command for axis ");
+            Serial.println(command[10]);
+            float axislen = command.substring(12).toFloat();
+            motors->operator[](command[10]).calibrateAxis(axislen);
         }
         else if (command.substring(0, 4) == "step"){
-            log += "LOGGING: Got step command\n";
-            String num_steps = command.substring(5);
+            Serial.print("LOGGING: Got step command for axis ");
+            Serial.println(command[5]);
+            String num_steps = command.substring(7);
             if (num_steps[0] == '-'){
-                log += "LOGGING: Got a minus - using minus\n";
+                Serial.println("LOGGING: Got a minus - using minus");
                 int steps = num_steps.substring(1).toInt();
-                log += stepper.moveAlongAxis(steps, 3, false);
+                Serial.println(motors->operator[](command[5]).moveAlongAxis(steps, 3, false));
             }
             else{
-                log += "LOGGING: Didn't get a minus - using plus\n";
+                Serial.println("LOGGING: Didn't get a minus - using plus");
                 int steps = num_steps.toInt();
-                log += stepper.moveAlongAxis(steps, 3, true);
+                Serial.println(motors->operator[](command[5]).moveAlongAxis(steps, 3, true));
             }
         }
         else if (command.substring(0, 8) == "distance"){
-            log += "LOGGING: Got distance command\n";
-            float dist = command.substring(9).toFloat();
+            Serial.print("LOGGING: Got distance command for axis ");
+            Serial.println(command[9]);
+            float dist = command.substring(11).toFloat();
             if (dist > 0){
-                log += stepper.moveDistance(dist, 3, true);
+                Serial.println(motors->operator[](command[9]).moveDistance(dist, 3, true));
             }
             else{
-                log += stepper.moveDistance(abs(dist), 3, false);
+                Serial.println(motors->operator[](command[9]).moveDistance(abs(dist), 3, false));
             }
         }
-        else if (command.substring(0, 3) == "home"){
-            log += "LOGGING: Got home command\n";
-            log += stepper.Home(3);
+        else if (command.substring(0, 4) == "home"){
+            Serial.print("LOGGING: Got home command for axis ");
+            Serial.println(command[5]);
+            Serial.println(motors->operator[](command[5]).Home(3));
         }
         else if (command.substring(0, 8) == "position"){
-            log += "LOGGING: Got position command\nCurrent position: ";
+            Serial.print("LOGGING: Got position command for axis ");
+            Serial.println(command[9]);
             Serial.print("Current position: ");
-            Serial.println(stepper.getCurrentPosition());
-            log += stepper.getCurrentPosition();
+            Serial.println(motors->operator[](command[9]).getCurrentPosition());
         }
         else if (command.substring(0, 5) == "debug"){
-            Serial.println("LOGGING: Got debug command - turning off safety checks");
-            String num_steps = command.substring(6);
+            Serial.print("LOGGING: Got debug command - turning off safety checks for axis ");
+            Serial.println(command[6]);
+            String num_steps = command.substring(8);
             if (num_steps[0] == '-'){
                 Serial.println("LOGGING: Got a minus - using minus");
                 int steps = num_steps.substring(1).toInt();
                 Serial.println(steps);
-                stepper.Steps(abs(steps), 3, false);
+                motors->operator[](command[6]).Steps(abs(steps), 3, false);
             }
             else{
-                log += "LOGGING: Didn't get a minus - using plus\n";
+                Serial.println("LOGGING: Didn't get a minus - using plus");
                 int steps = num_steps.toInt();
-                stepper.Steps(steps, 3, true);
+                motors->operator[](command[6]).Steps(steps, 3, true);
             }
         }
         else{
-            log += "LOGGING: Unknown command\n";
+            Serial.println("LOGGING: Unknown command");
             Serial.println("Unknown or Unimplemented command!\n "
                                    "Commands include: {'calibrate', 'step', 'home', 'position', 'debug' <use sparingly and with caution> }");
         }
-        Serial.println(log);
         command = "";
-        log = "";
     }
-
-//    String numSteps;
-//
-//    while (Serial.available()) {
-//        delay(3);
-//        if (Serial.available() > 0) {
-//            char c = Serial.read();
-//            numSteps += c;
-//        }
-//    }
-//
-//    if (numSteps.length() > 0) {
-//        Serial.print(numSteps);
-//        Serial.println(" steps");
-//
-//        String log;
-//        Serial.println(numSteps);
-//        if (numSteps.substring(0, 1) == "-") {
-//            log += "Got a minus - using minus\n";
-//            int steps = numSteps.substring(1).toInt();
-//            log += stepper.moveAlongAxis(steps, 3, false);
-//        }
-//        else {
-//            log += "Didn't get a minus - using plus\n";
-//            int steps = numSteps.toInt();
-//            log += stepper.moveAlongAxis(steps, 3, true);
-//
-//        }
-//        Serial.println("LOGGING");
-//        Serial.println(log);
-//        numSteps = "";
-//    }
-
-
 }

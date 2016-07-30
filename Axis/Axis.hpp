@@ -142,6 +142,13 @@ public:
     int getCurrentPosition();
 
     /**
+     * Gets the id of the motor.
+     *
+     * @return id
+     */
+    char getID();
+
+    /**
      * Takes the motor home (to position zero)
      *
      * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.

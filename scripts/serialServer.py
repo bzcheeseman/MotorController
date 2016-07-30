@@ -5,6 +5,7 @@ import logging
 import select
 import threading
 import time
+import os
 
 logging.basicConfig(level=logging.DEBUG,
                     format = '%(asctime)s %(threadName)s %(name)s %(levelname)s %(message)s',
@@ -36,10 +37,10 @@ class SerialServer():
 
     def run(self):
         self.__open__()
-        input = [self.server, sys.stdin]
+        incoming = [self.server]
         running = 1
         while running:
-            inputready, outputready, exceptready = select.select(input, [], [])
+            inputready, outputready, exceptready = select.select(incoming, [], [])
 
             for s in inputready:
                 if s == self.server:
@@ -49,7 +50,7 @@ class SerialServer():
                     self.threads.append(client)
 
                 elif s == sys.stdin:
-                    input = sys.stdin.readline()
+                    incoming = sys.stdin.readline()
                     self.log.debug("Received shutdown signal.")
                     self.log.info("Shutting down")
                     running = 0
@@ -85,21 +86,34 @@ class SerialHandler(threading.Thread):
                 self.client.send("ACK " + data)
 
                 if data.split(" ")[0][:3] == "COM":
-                    self.ino = serial.Serial('/dev/tty.usbmodem1D1121', 9600, timeout=self.timeout) #replace this with the port that came in
-                    to_send = " ".join(data.split(" ")[1:])
-                    self.log.info("Sending to Arduino on " + self.ino.port + ": " + to_send)
-                    time.sleep(1)
-                    self.ino.write(to_send + '\n')
+                    try:
+                        self.ino = serial.Serial(data.split(" ")[0], 9600, timeout=self.timeout)
+                        to_send = " ".join(data.split(" ")[1:])
 
-                    read,_,_ = select.select([self.ino], [], [], self.timeout)
+                        self.log.info("Sending to Arduino on " + self.ino.port + ": " + to_send)
+                        time.sleep(0.5)
+                        self.ino.write(to_send + '\n')
 
-                    while read[0]:
-                        line = self.ino.readline()
-                        self.log.info(line)
-                        if len(line) < 2:
-                            break
+                        if os.name != "nt":
+                            read,_,_ = select.select([self.ino], [], [], self.timeout)
 
-                    self.ino.close()
+                            while read[0]:
+                                line = self.ino.readline()
+                                self.log.info(line)
+                                if len(line) < 2:
+                                    break
+
+                        else:
+                            while self.ino.in_waiting > 0:
+                                line = self.ino.readline()
+                                self.log.info(line)
+                                print line
+
+                        self.ino.close()
+
+                    except serial.SerialException, message:
+                        self.log.warning(message)
+                        print message
 
             else:
                 self.client.close()
