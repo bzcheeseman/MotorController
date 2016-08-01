@@ -10,10 +10,9 @@
 #include <string.h>
 
 /*
- * TODO: Fix the documentation to be useful in Axis files and MotorController.ino
- * TODO: Fix python interface
- * TODO: Hope the current thing works, test it when possible (when endstops come in)
- * TODO: get the endstops and test out the calibration interface
+ * TODO: Confirm python interface works for switches also
+ * TODO: Fix the calibration interface
+ * TODO: Switch to c-style stuff, class variables don't work so make a struct that holds everything and pass it around.
  */
 
 /**
@@ -31,9 +30,6 @@ class Axis {
 private:
     //! The length of the axis
     int axisLen;
-
-    //! Holds the current position of the stage
-    int current_position;
 
     //! Holds the distance per step
     float distPerStep;
@@ -96,9 +92,6 @@ private:
     //! Torque mode of the motor, one of the items in the enum torqueMode_t
     torqueMode_t torqueMode;
 
-    //! Since the calibration sets the length of the axis we need to do that first.
-    bool calibrated;
-
     /**
      * Individual method for movement in the plus/minus direction
      *
@@ -123,23 +116,18 @@ public:
     void Steps(int numSteps, int torque_mode, bool plus);
 
 public:
+
     /**
      * Tells the motor to move a certain distance.  Assumes we start at zero.
      *
      * @param steps The number of steps we want to move (ideally)
      * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
      * @param plus If true, then we use the _plus(torqueMode_t) routine, if false, we use the _minus(torqueMode_t) routine.
+     * @param current_position Holds the current position of the stage - set externally.
      *
      * @returns Logging string that contains everything executed (that was set up).
      */
-    String moveAlongAxis(int steps, int torque_mode, bool plus);
-
-    /**
-     * Gets the current position of the motor.
-     *
-     * @return current_position
-     */
-    int getCurrentPosition();
+    String moveAlongAxis(int steps, int torque_mode, bool plus, int& current_position, const bool& calibrated);
 
     /**
      * Gets the id of the motor.
@@ -152,16 +140,19 @@ public:
      * Takes the motor home (to position zero)
      *
      * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
+     * @param current_position Holds the current position of the stage
      */
-    String Home(int torque_mode);
+
+    String Home(int torque_mode, int& current_position, const bool& calibrated);
 
     /**
      * Allows us to calibrate the axis steps to a distance.  Assumes full step mode.  This WILL depend on which
      * motor is used.  Calibration should be done in cm for completeness.
      *
      * @param dist_cm Length of the axis
+     * @param current_position Holds the current position of the stage
      */
-    void calibrateAxis(float dist_cm);
+    void calibrateAxis(float dist_cm, int& current_position, bool& calibrated);
 
     /**
      * Moves the carriage a certain distance according to the given calibration.
@@ -169,9 +160,11 @@ public:
      * @param dist_cm Distance to move
      * @param torque_mode 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
      * @param plus Controls the direction.  @see moveAlongAxis(int,int,bool)
+     * @param current_position Holds the current position of the stage
+     *
      * @return Logging string that describes the actions.  @see moveAlongAxis(int,int,bool)
      */
-    String moveDistance(float dist_cm, int torque_mode, bool plus);
+    String moveDistance(float dist_cm, int torque_mode, bool plus, int& current_position, const bool& calibrated);
 
 };
 
