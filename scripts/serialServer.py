@@ -88,10 +88,10 @@ class SerialHandler(threading.Thread):
                 if data.split(" ")[0][:3] == "COM":
                     try:
                         self.ino = serial.Serial(data.split(" ")[0], 9600, timeout=self.timeout)
+                        time.sleep(1)
                         to_send = " ".join(data.split(" ")[1:])
 
                         self.log.info("Sending to Arduino on " + self.ino.port + ": " + to_send)
-                        time.sleep(0.5)
                         self.ino.write(to_send + '\n')
 
                         if os.name != "nt":
@@ -104,10 +104,11 @@ class SerialHandler(threading.Thread):
                                     break
 
                         else:
-                            while self.ino.in_waiting > 0:
-                                line = self.ino.readline()
-                                self.log.info(line)
-                                print line
+
+                            while self.ino.inWaiting() > 0:
+                                l = self.ino.readline()
+                                self.log.info(l)
+                                print l
 
                         self.ino.close()
 
