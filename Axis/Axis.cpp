@@ -27,11 +27,13 @@ Axis::Axis(int dirPin, int stepPin, int resetPin, int sleepPin, int stopPin_plus
     pinMode(this->dirPin, OUTPUT);
     pinMode(this->resetPin, OUTPUT);
     pinMode(this->sleepPin, INPUT);
+    pinMode(this->stopPin_plus - 1, OUTPUT);
     pinMode(this->stopPin_plus, INPUT);
+    pinMode(this->stopPin_minus - 1, OUTPUT);
     pinMode(this->stopPin_minus, INPUT);
     pinMode(13, OUTPUT);
 
-    calibrated = false;
+    this->torqueMode = LOW_T;
 }
 
 Axis::~Axis(){
@@ -124,7 +126,7 @@ void Axis::Steps(int numSteps, int torque_mode, bool plus){
 
 }
 
-String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
+String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus, int& current_position, const bool& calibrated) {
     if (calibrated){
         ;
     }
@@ -210,40 +212,61 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
     }
 }
 
-int Axis::getCurrentPosition() {
-    return current_position;
-}
-
 char Axis::getID() {
     return id;
 }
 
 
-void Axis::calibrateAxis(float dist_cm) {
-    digitalWrite(13, HIGH);
+void Axis::calibrateAxis(float dist_cm, int& current_position, bool& calibrated) {
+
+    int sleep = digitalRead(sleepPin);
+    digitalWrite(resetPin, sleep);
+
+    digitalWrite(this->stopPin_minus - 1, 1);
     //minus direction - high means it hit the end stop
-    while (HIGH != digitalRead(stopPin_minus)){
-        this->_minus(LOW_T);
+    while (1){
+        delay(10);
+        int stop = digitalRead(stopPin_minus);
+        if (stop != 0){
+            break;
+        }
+        this->_minus(torqueMode);
     }
     current_position = 0;
 
+    digitalWrite(this->stopPin_plus - 1, 1);
     //Now run it to the plus direction
-    while (HIGH != digitalRead(stopPin_plus)){
+    while (1){
+        delay(20);
+        int stop = digitalRead(stopPin_plus);
+        if (stop != 0){
+            break;
+        }
         current_position++;
-        this->_plus(LOW_T);
+        this->_plus(torqueMode);
     }
+
     //set the length of the axis for future calibration stuff
     axisLen = current_position;
 
+    for (int i = 0; i < 100; i++){
+        current_position--;
+        this->_minus(torqueMode);
+    }
+
+    Serial.println(current_position);
+
     distPerStep = dist_cm/float(current_position);
-    digitalWrite(13, LOW);
+    digitalWrite(this->stopPin_minus-1, 0);
+    digitalWrite(this->stopPin_plus-1, 0);
+    digitalWrite(resetPin, LOW);
     calibrated = true;
 }
 
-String Axis::moveDistance(float dist_cm, int torque_mode, bool plus) {
+String Axis::moveDistance(float dist_cm, int torque_mode, bool plus, int& current_position, const bool& calibrated) {
     if (calibrated){
-        int steps = round(dist_cm * distPerStep);
-        String output = moveAlongAxis(steps, torque_mode, plus);
+        int steps = round(dist_cm/distPerStep);
+        String output = moveAlongAxis(steps, torque_mode, plus, current_position, calibrated);
         return output;
     }
     else{
@@ -252,7 +275,7 @@ String Axis::moveDistance(float dist_cm, int torque_mode, bool plus) {
     }
 }
 
-String Axis::Home(int torque_mode) {
+String Axis::Home(int torque_mode, int& current_position, const bool& calibrated) {
 
     if (calibrated){
         switch (torque_mode){
@@ -275,3 +298,9 @@ String Axis::Home(int torque_mode) {
 
 
 }
+
+
+
+
+
+
