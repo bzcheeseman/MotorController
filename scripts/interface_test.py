@@ -23,44 +23,234 @@ def main():
     logger.debug('connecting to server')
     s.connect((ip, port))
 
-    # Send the data
-    message = 'COM8 calibrate'
+    message = 'COM8 calibrated x'
     logger.debug('sending data: "%s"', message)
-    len_sent = s.send(message)
+    s.send(message)
 
     # Receive a response
     logger.debug('waiting for response')
     response = s.recv(MAX_LENGTH)
     logger.debug('response from server: "%s"', response)
 
-    # s.close()
+    logger.debug('waiting for response')
+    responsecalx = s.recv(MAX_LENGTH)
+    logger.debug('response from server: "%s"', responsecalx)
+
+    message = 'COM8 calibrated y'
+    logger.debug('sending data: "%s"', message)
+    s.send(message)
+
+    # Receive a response
+    logger.debug('waiting for response')
+    response = s.recv(MAX_LENGTH)
+    logger.debug('response from server: "%s"', response)
+
+    logger.debug('waiting for response')
+    responsecaly = s.recv(MAX_LENGTH)
+    logger.debug('response from server: "%s"', responsecaly)
+
+    i = 0
+
+    while responsecalx.split("\n")[1][0] != '1' and responsecaly.split("\n")[1][0] != '1' and i < 15:
+        i+=1
+        message = 'COM8 calibrate x 39.735'
+        logger.debug('sending data: "%s"', message)
+        s.send(message)
+        time.sleep(10)
+
+        # Receive a response
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        message = 'COM8 calibrated x'
+        logger.debug('sending data: "%s"', message)
+        s.send(message)
+
+        # Receive a response
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        logger.debug('waiting for response')
+        responsecalx = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', responsecalx)
+
+        message = 'COM8 calibrate y 10.5'
+        logger.debug('sending data: "%s"', message)
+        s.send(message)
+        time.sleep(10)
+
+        # Receive a response
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        message = 'COM8 calibrated y'
+        logger.debug('sending data: "%s"', message)
+        s.send(message)
+
+        # Receive a response
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        logger.debug('waiting for response')
+        responsecaly = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', responsecaly)
+
+
+    message = 'COM8 calibrated y'
+    logger.debug('sending data: "%s"', message)
+    s.send(message)
+
+    # Receive a response
+    logger.debug('waiting for response')
+    response = s.recv(MAX_LENGTH)
+    logger.debug('response from server: "%s"', response)
+
+    logger.debug('waiting for response')
+    responsecal = s.recv(MAX_LENGTH)
+    logger.debug('response from server: "%s"', responsecal)
+
+    i = 0
+
+    while responsecal.split("\n")[1][0] != '1' and i < 15:
+        i+=1
+        message = 'COM8 calibrate y 10.5'
+        logger.debug('sending data: "%s"', message)
+        s.send(message)
+        time.sleep(10)
+
+        # Receive a response
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        message = 'COM8 calibrated y'
+        logger.debug('sending data: "%s"', message)
+        s.send(message)
+
+        # Receive a response
+        logger.debug('waiting for response')
+        response = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', response)
+
+        logger.debug('waiting for response')
+        responsecal = s.recv(MAX_LENGTH)
+        logger.debug('response from server: "%s"', responsecal)
+
+
+
+    # # Home x
+    # message = 'COM8 calibrate x 38.735'
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
     #
-    # Connect to the server
-    logger.debug('creating socket')
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    logger.debug('connecting to server')
-    s.connect((ip, port))
-
-    # Try an invalid message
-    message = 'COM8 hello world'
-    logger.debug('sending data: "%s"', message)
-    len_sent = s.send(message)
-
-    # Receive a response
-    logger.debug('waiting for response')
-    response = s.recv(MAX_LENGTH)
-    logger.debug('response from server: "%s"', response)
-
-    s.close()
-
-    # Connect to the server
-    logger.debug('creating socket')
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    logger.debug('connecting to server')
-    s.connect((ip, port))
-
-    # close the server
-    s.send('close')
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Home y
+    # message = 'COM8 calibrate y 10.5'
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Home x
+    # message = 'COM8 home x'
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Home y
+    # message = 'COM8 home y'
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Send x to the middle
+    # message = 'COM8 distance x %f' % (38.735/2.0)
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Send y to the middle
+    # message = 'COM8 distance y %f' % (10.5/2.0)
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Move z around some
+    # message = 'COM8 debug z -500'
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Home x
+    # message = 'COM8 home x'
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
+    #
+    # # Home y
+    # message = 'COM8 home y'
+    # logger.debug('sending data: "%s"', message)
+    # s.send(message)
+    # time.sleep(1)
+    #
+    # # Receive a response
+    # logger.debug('waiting for response')
+    # response = s.recv(MAX_LENGTH)
+    # logger.debug('response from server: "%s"', response)
 
     # Clean up
     logger.debug('closing socket')

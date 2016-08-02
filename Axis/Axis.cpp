@@ -156,8 +156,8 @@ String Axis::moveAlongAxis(bool plus, passData& info) {
             info.currentPosition++;
             //Test current position, move if valid, don't move if not valid
             if (info.currentPosition >= info.axisLen){
-                Serial.println("Positive Limit Reached.  Stopping at ");
-                Serial.print(info.currentPosition);
+                Serial.print("Positive Limit Reached.  Stopping at ");
+                Serial.println(info.currentPosition);
                 log += "LOGGING: Moved ";
                 log += i;
                 log += " steps.\nLOGGING: Current position = ";
@@ -223,23 +223,41 @@ void Axis::calibrateAxis(passData& info) {
     digitalWrite(resetPin, sleep);
 
     digitalWrite(this->stopPin_minus - 1, 1);
+    delayMicroseconds(10);
+    if (digitalRead(this->stopPin_minus) != 0){
+        Serial.println("Some error in the wiring occurred!");
+        Serial.println("LOGGING: CALIBRATION ERROR - ENDSTOP TRIGGERED PREMATURELY");
+        digitalWrite(resetPin, LOW);
+        return;
+    }
     //minus direction - high means it hit the end stop
     while (1){
         delay(10);
         int stop = digitalRead(stopPin_minus);
         if (stop != 0){
+            Serial.println("LOGGING: Minus triggered");
             break;
         }
         this->_minus(torqueMode);
     }
     info.currentPosition = 0;
+    delay(100);
 
+    digitalWrite(this->stopPin_minus - 1, 0);
     digitalWrite(this->stopPin_plus - 1, 1);
+    delayMicroseconds(10);
+    if (digitalRead(this->stopPin_plus) != 0){
+        Serial.println("Some error in the wiring occurred!");
+        Serial.println("LOGGING: CALIBRATION ERROR - ENDSTOP TRIGGERED PREMATURELY");
+        digitalWrite(resetPin, LOW);
+        return;
+    }
     //Now run it to the plus direction
     while (1){
         delay(20);
         int stop = digitalRead(stopPin_plus);
         if (stop != 0){
+            Serial.println("LOGGING: Plus triggered");
             break;
         }
         info.currentPosition++;
@@ -249,15 +267,15 @@ void Axis::calibrateAxis(passData& info) {
     //set the length of the axis for future calibration stuff
     info.axisLen = info.currentPosition;
 
-    for (int i = 0; i < 100; i++){
-        info.currentPosition--;
-        this->_minus(torqueMode);
-    }
+//    for (int i = 0; i < 100; i++){
+//        info.currentPosition--;
+//        this->_minus(torqueMode);
+//    }
 
+    Serial.print("LOGGING: Current position: ");
     Serial.println(info.currentPosition);
 
     info.distPerStep = info.dist_cm/float(info.currentPosition);
-    digitalWrite(this->stopPin_minus-1, 0);
     digitalWrite(this->stopPin_plus-1, 0);
     digitalWrite(resetPin, LOW);
     info.calibrated = true;
@@ -278,18 +296,11 @@ String Axis::moveDistance(bool plus, passData& info) {
 String Axis::Home(passData& info) {
 
     if (info.calibrated){
-        switch (info.torque_mode){
-            case 1: torqueMode = HIGH_T; break;
-            case 2: torqueMode = MED_T; break;
-            case 3: torqueMode = LOW_T; break;
-            default: torqueMode = LOW_T; break;
-        }
 
-        for (int i = 0; i < info.currentPosition; i++){
-            //Update current position
-            info.currentPosition--;
-            this->_minus(torqueMode);
-        }
+        this->Steps(info.currentPosition, info.torque_mode, false);
+        info.currentPosition = 0;
+        return "Axis homed.  Current position: " + String(info.currentPosition);
+
     }
     else{
         Serial.println("Uncalibrated!");

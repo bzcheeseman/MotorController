@@ -7,6 +7,8 @@ import threading
 import time
 import os
 
+MAX_LENGTH = 2**5
+
 logging.basicConfig(level=logging.DEBUG,
                     format = '%(asctime)s %(threadName)s %(name)s %(levelname)s %(message)s',
                     filename = "../logging/MotorControllerServer.log",
@@ -42,8 +44,8 @@ class SerialServer():
         while running:
             inputready, outputready, exceptready = select.select(incoming, [], [])
 
-            for s in inputready:
-                if s == self.server:
+            for ins in inputready:
+                if ins == self.server:
                     client = SerialHandler(self.server.accept())
                     self.log.info("Accepted incoming request from " + str(client.address[0]))
                     client.start()
@@ -61,8 +63,6 @@ class SerialServer():
 
         return 0
 
-
-
 class SerialHandler(threading.Thread):
     def __init__(self,(client,address)):
         threading.Thread.__init__(self)
@@ -71,7 +71,7 @@ class SerialHandler(threading.Thread):
         self.address = address
         self.size = 128
         self.ino = None
-        self.timeout = 10
+        self.timeout = 5
 
     def run(self):
         running = 1
@@ -93,6 +93,7 @@ class SerialHandler(threading.Thread):
 
                         self.log.info("Sending to Arduino on " + self.ino.port + ": " + to_send)
                         self.ino.write(to_send + '\n')
+                        time.sleep(1)
 
                         if os.name != "nt":
                             read,_,_ = select.select([self.ino], [], [], self.timeout)
@@ -104,11 +105,11 @@ class SerialHandler(threading.Thread):
                                     break
 
                         else:
-
-                            while self.ino.inWaiting() > 0:
-                                l = self.ino.readline()
+                            while self.ino.in_waiting > 0:
+                                l = self.ino.read(MAX_LENGTH)
                                 self.log.info(l)
                                 print l
+                                self.client.send(l)
 
                         self.ino.close()
 

@@ -17,7 +17,7 @@
 //for some reason it's not keeping the current position outside the function...need to fix that
 
 Axis steppers[3] = {Axis (8, 9, 52, 53, 23, 25, 'x'),
-                    Axis (5, 6, 50, 51, 24, 25, 'y'),
+                    Axis (5, 6, 50, 51, 27, 29, 'y'),
                     Axis (3, 4, 48, 49, 26, 27, 'z')};
 
 passData info[3];
@@ -67,7 +67,10 @@ void loop() {
     if (command.length() > 0){
         Serial.println(command);
         command.toLowerCase();
-        if (command.substring(0, 9) == "calibrate"){
+        if (command.substring(0, 10) == "calibrated"){
+            Serial.println(chooseInfo(command[11]).calibrated);
+        }
+        else if (command.substring(0, 9) == "calibrate"){
             Serial.print("LOGGING: Got calibrate command for axis ");
             Serial.println(command[10]);
             float axislen = command.substring(12).toFloat();
@@ -98,8 +101,8 @@ void loop() {
             Serial.println(command[9]);
             Axis which (chooseStepper(command[9]));
             chooseInfo(command[9]).torque_mode = 3;
-            if (dist > 0){
-                chooseInfo(command[9]).dist_cm = command.substring(11).toFloat();
+            chooseInfo(command[9]).dist_cm = command.substring(11).toFloat();
+            if (chooseInfo(command[9]).dist_cm > 0){
                 Serial.println(which.moveDistance(true, chooseInfo(command[9])));
             }
             else{
