@@ -11,7 +11,7 @@
 
 /*
  * TODO: Confirm python interface works for switches also
- * TODO: Figure out why the switches only sometimes work
+ * TODO: Figure out why the endstops only sometimes work
  * TODO: Confirm python interface works for this too
  */
 
