@@ -11,8 +11,8 @@
 
 /*
  * TODO: Confirm python interface works for switches also
- * TODO: Fix the calibration interface
- * TODO: Switch to c-style stuff, class variables don't work so make a struct that holds everything and pass it around.
+ * TODO: Test the C-style passing around, hopefully it works better now.  Also everything should just work hopefully
+ * TODO: Confirm python interface works for this too
  */
 
 /**
@@ -25,14 +25,41 @@
  * Full Notice at MotorController/LICENSE.txt
  */
 
+
+/**
+ * @struct passData Axis.hpp
+ * @brief Holds data to be passed to the Axis class.
+ *
+ * Pass around a pointer to this (or a reference) so that the data stays synchronized throughout the loop function of
+ * the arduino.
+ */
+struct passData{
+  //! Length of the Axis
+  int axisLen;
+  //! Distance per step - no meanin unless calibrated
+  float distPerStep;
+  //! Whether this axis has been calibrated or not
+  bool calibrated;
+  //! The current position of this axis
+  int currentPosition;
+  //! 1 = HIGH_T, 2 = MED_T, 3 = LOW_T - these are set by the timing of the pin switching.
+  int torque_mode;
+  //! Any movement method takes either a distance or a number of steps - this is the distance
+  float dist_cm;
+  //! Any movement method takes either a distance or a number of steps - this is the number of steps
+  int numSteps;
+};
+
+/**
+ * @class Axis Axis.hpp src/Axis.cpp
+ * @brief Holds the Axis commands for movement and calibration.
+ *
+ * Holds and passes around the commands for movement and calibration.  This allows for (ideally) internal handling of
+ * movement and other aspects.
+ */
+
 class Axis {
 
-private:
-    //! The length of the axis
-    int axisLen;
-
-    //! Holds the distance per step
-    float distPerStep;
 public:
     /**
      * Class constructor - sets up the pins properly and a short message alerting the user that the motor was
@@ -127,7 +154,7 @@ public:
      *
      * @returns Logging string that contains everything executed (that was set up).
      */
-    String moveAlongAxis(int steps, int torque_mode, bool plus, int& current_position, const bool& calibrated);
+    String moveAlongAxis(bool plus, passData& info);
 
     /**
      * Gets the id of the motor.
@@ -143,7 +170,7 @@ public:
      * @param current_position Holds the current position of the stage
      */
 
-    String Home(int torque_mode, int& current_position, const bool& calibrated);
+    String Home(passData& info);
 
     /**
      * Allows us to calibrate the axis steps to a distance.  Assumes full step mode.  This WILL depend on which
@@ -152,7 +179,7 @@ public:
      * @param dist_cm Length of the axis
      * @param current_position Holds the current position of the stage
      */
-    void calibrateAxis(float dist_cm, int& current_position, bool& calibrated);
+    void calibrateAxis(passData& info);
 
     /**
      * Moves the carriage a certain distance according to the given calibration.
@@ -164,7 +191,7 @@ public:
      *
      * @return Logging string that describes the actions.  @see moveAlongAxis(int,int,bool)
      */
-    String moveDistance(float dist_cm, int torque_mode, bool plus, int& current_position, const bool& calibrated);
+    String moveDistance(bool plus, passData& info);
 
 };
 

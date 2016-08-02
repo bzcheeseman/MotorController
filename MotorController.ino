@@ -20,8 +20,7 @@ Axis steppers[3] = {Axis (8, 9, 52, 53, 23, 25, 'x'),
                     Axis (5, 6, 50, 51, 24, 25, 'y'),
                     Axis (3, 4, 48, 49, 26, 27, 'z')};
 
-int positions[3] = {0, 0, 0};
-bool calibrated[3] = {false, false, false};
+passData info[3];
 
 Axis chooseStepper(char which){
     if (which == 'x'){
@@ -35,27 +34,18 @@ Axis chooseStepper(char which){
     }
 }
 
-int& choosePosition(char which){
+passData &chooseInfo(char which){
     if (which == 'x'){
-        return positions[0];
+        return info[0];
     }
     else if (which == 'y'){
-        return positions[1];
+        return info[1];
     }
     else if (which == 'z'){
-        return positions[2];
+        return info[2];
     }
-}
-
-bool& chooseCalib(char which){
-    if (which == 'x'){
-        return calibrated[0];
-    }
-    else if (which == 'y'){
-        return calibrated[1];
-    }
-    else if (which == 'z'){
-        return calibrated[2];
+    else{
+        Serial.println("No such axis!");
     }
 }
 
@@ -82,62 +72,69 @@ void loop() {
             Serial.println(command[10]);
             float axislen = command.substring(12).toFloat();
             Axis which (chooseStepper(command[10]));
-            which.calibrateAxis(axislen, choosePosition(command[10]), chooseCalib(command[10]));
+            chooseInfo(command[10]).dist_cm = axislen;
+            chooseInfo(command[10]).torque_mode = 3;
+            which.calibrateAxis(chooseInfo(command[10]));
         }
         else if (command.substring(0, 4) == "step"){
             Serial.print("LOGGING: Got step command for axis ");
             Serial.println(command[5]);
             Axis which (chooseStepper(command[5]));
+            chooseInfo(command[5]).torque_mode = 3;
             String num_steps = command.substring(7);
             if (num_steps[0] == '-'){
                 Serial.println("LOGGING: Got a minus - using minus");
-                int steps = num_steps.toInt();
-                Serial.println(which.moveAlongAxis(abs(steps), 3, false, choosePosition(command[5]), chooseCalib(command[5])));
+                chooseInfo(command[5]).numSteps = abs(num_steps.toInt());
+                Serial.println(which.moveAlongAxis(false, chooseInfo(command[5])));
             }
             else{
                 Serial.println("LOGGING: Didn't get a minus - using plus");
-                int steps = num_steps.toInt();
-                Serial.println(which.moveAlongAxis(steps, 3, true, choosePosition(command[5]), chooseCalib(command[5])));
+                chooseInfo(command[5]).numSteps = num_steps.toInt();
+                Serial.println(which.moveAlongAxis(true, chooseInfo(command[5])));
             }
         }
         else if (command.substring(0, 8) == "distance"){
             Serial.print("LOGGING: Got distance command for axis ");
             Serial.println(command[9]);
-            Axis which (chooseStepper(command[10]));
-            float dist = command.substring(11).toFloat();
+            Axis which (chooseStepper(command[9]));
+            chooseInfo(command[9]).torque_mode = 3;
             if (dist > 0){
-                Serial.println(which.moveDistance(dist, 3, true, choosePosition(command[9]), chooseCalib(command[9])));
+                chooseInfo(command[9]).dist_cm = command.substring(11).toFloat();
+                Serial.println(which.moveDistance(true, chooseInfo(command[9])));
             }
             else{
-                Serial.println(which.moveDistance(abs(dist), 3, false, choosePosition(command[9]), chooseCalib(command[9])));
+                chooseInfo(command[9]).dist_cm = abs(command.substring(11).toFloat());
+                Serial.println(which.moveDistance(false, chooseInfo(command[9])));
             }
         }
         else if (command.substring(0, 4) == "home"){
             Serial.print("LOGGING: Got home command for axis ");
             Serial.println(command[5]);
             Axis which (chooseStepper(command[5]));
-            Serial.println(which.Home(3, choosePosition(command[5]), chooseCalib(command[9])));
+            chooseInfo(command[5]).torque_mode = 3;
+            Serial.println(which.Home(chooseInfo(command[5])));
         }
         else if (command.substring(0, 8) == "position"){
             Serial.print("LOGGING: Got position command for axis ");
             Serial.println(command[9]);
             Serial.print("Current position: ");
-            Serial.println(choosePosition(command[9]));
+            Serial.println(chooseInfo(command[9]).currentPosition);
         }
         else if (command.substring(0, 5) == "debug"){
             Serial.print("LOGGING: Got debug command - turning off safety checks for axis ");
             Serial.println(command[6]);
             Axis which (chooseStepper(command[6]));
+            chooseInfo(command[6]).torque_mode = 3;
             String num_steps = command.substring(8);
             if (num_steps[0] == '-'){
                 Serial.println("LOGGING: Got a minus - using minus");
-                int steps = num_steps.toInt();
-                which.Steps(abs(steps), 3, false);
+                chooseInfo(command[6]).numSteps = num_steps.toInt();
+                which.Steps(abs(chooseInfo(command[6]).numSteps), chooseInfo(command[6]).torque_mode, false);
             }
             else{
                 Serial.println("LOGGING: Didn't get a minus - using plus");
-                int steps = num_steps.toInt();
-                which.Steps(steps, 3, true);
+                chooseInfo(command[6]).numSteps = num_steps.toInt();
+                which.Steps(chooseInfo(command[6]).numSteps, chooseInfo(command[6]).torque_mode, true);
             }
         }
         else{
