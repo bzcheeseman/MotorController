@@ -11,7 +11,7 @@
 
 /*
  * TODO: Confirm python interface works for switches also
- * TODO: Test the C-style passing around, hopefully it works better now.  Also everything should just work hopefully
+ * TODO: Figure out why the switches only sometimes work
  * TODO: Confirm python interface works for this too
  */
 
