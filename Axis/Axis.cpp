@@ -126,8 +126,8 @@ void Axis::Steps(int numSteps, int torque_mode, bool plus){
 
 }
 
-String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus, int& current_position, const bool& calibrated) {
-    if (calibrated){
+String Axis::moveAlongAxis(bool plus, passData& info) {
+    if (info.calibrated){
         ;
     }
     else{
@@ -137,13 +137,13 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus, int& curren
 
     String log;
     log += "LOGGING: Steps = ";
-    log += numSteps;
+    log += info.numSteps;
     log += "\n";
 
     int sleep = digitalRead(sleepPin);
     digitalWrite(resetPin, sleep);
 
-    switch (torque_mode){
+    switch (info.torque_mode){
         case 1: torqueMode = HIGH_T; break;
         case 2: torqueMode = MED_T; break;
         case 3: torqueMode = LOW_T; break;
@@ -151,17 +151,17 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus, int& curren
     }
 
     if (plus){
-        for (int i = 0; i < numSteps; i++){
+        for (int i = 0; i < info.numSteps; i++){
             //Update current position
-            current_position++;
+            info.currentPosition++;
             //Test current position, move if valid, don't move if not valid
-            if (current_position >= axisLen){
+            if (info.currentPosition >= info.axisLen){
                 Serial.println("Positive Limit Reached.  Stopping at ");
-                Serial.print(current_position);
+                Serial.print(info.currentPosition);
                 log += "LOGGING: Moved ";
                 log += i;
                 log += " steps.\nLOGGING: Current position = ";
-                log += current_position;
+                log += info.currentPosition;
                 log += "\n";
                 digitalWrite(resetPin, LOW);
                 return log;
@@ -173,25 +173,25 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus, int& curren
         //Log outcome
         delayMicroseconds(500);
         log += "LOGGING: Moved ";
-        log += numSteps;
+        log += info.numSteps;
         log += " steps.\nLOGGING: Current position = ";
-        log += current_position;
+        log += info.currentPosition;
         log += "\n";
         digitalWrite(resetPin, LOW);
         return log;
     }
     else{
-        for (int i = 0; i < numSteps; i++){
+        for (int i = 0; i < info.numSteps; i++){
             //Update current position
-            current_position--;
+            info.currentPosition--;
             //Test current position, move if valid, don't move if not valid
-            if (current_position <= 0){
+            if (info.currentPosition <= 0){
                 Serial.print("Negative Limit Reached.  Stopping at ");
-                Serial.println(current_position);
+                Serial.println(info.currentPosition);
                 log += "LOGGING: Moved ";
                 log += i;
                 log += " steps.\nLOGGING: Current position = ";
-                log += current_position;
+                log += info.currentPosition;
                 log += "\n";
                 digitalWrite(resetPin, LOW);
                 return log;
@@ -203,9 +203,9 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus, int& curren
         //Log outcome
         delayMicroseconds(500);
         log += "LOGGING: Moved ";
-        log += numSteps;
+        log += info.numSteps;
         log += " steps.\nLOGGING: Current position = ";
-        log += current_position;
+        log += info.currentPosition;
         log += "\n";
         digitalWrite(resetPin, LOW);
         return log;
@@ -217,7 +217,7 @@ char Axis::getID() {
 }
 
 
-void Axis::calibrateAxis(float dist_cm, int& current_position, bool& calibrated) {
+void Axis::calibrateAxis(passData& info) {
 
     int sleep = digitalRead(sleepPin);
     digitalWrite(resetPin, sleep);
@@ -232,7 +232,7 @@ void Axis::calibrateAxis(float dist_cm, int& current_position, bool& calibrated)
         }
         this->_minus(torqueMode);
     }
-    current_position = 0;
+    info.currentPosition = 0;
 
     digitalWrite(this->stopPin_plus - 1, 1);
     //Now run it to the plus direction
@@ -242,31 +242,31 @@ void Axis::calibrateAxis(float dist_cm, int& current_position, bool& calibrated)
         if (stop != 0){
             break;
         }
-        current_position++;
+        info.currentPosition++;
         this->_plus(torqueMode);
     }
 
     //set the length of the axis for future calibration stuff
-    axisLen = current_position;
+    info.axisLen = info.currentPosition;
 
     for (int i = 0; i < 100; i++){
-        current_position--;
+        info.currentPosition--;
         this->_minus(torqueMode);
     }
 
-    Serial.println(current_position);
+    Serial.println(info.currentPosition);
 
-    distPerStep = dist_cm/float(current_position);
+    info.distPerStep = info.dist_cm/float(info.currentPosition);
     digitalWrite(this->stopPin_minus-1, 0);
     digitalWrite(this->stopPin_plus-1, 0);
     digitalWrite(resetPin, LOW);
-    calibrated = true;
+    info.calibrated = true;
 }
 
-String Axis::moveDistance(float dist_cm, int torque_mode, bool plus, int& current_position, const bool& calibrated) {
-    if (calibrated){
-        int steps = round(dist_cm/distPerStep);
-        String output = moveAlongAxis(steps, torque_mode, plus, current_position, calibrated);
+String Axis::moveDistance(bool plus, passData& info) {
+    if (info.calibrated){
+        info.numSteps = round(info.dist_cm/info.distPerStep);
+        String output = moveAlongAxis(plus, info);
         return output;
     }
     else{
@@ -275,19 +275,19 @@ String Axis::moveDistance(float dist_cm, int torque_mode, bool plus, int& curren
     }
 }
 
-String Axis::Home(int torque_mode, int& current_position, const bool& calibrated) {
+String Axis::Home(passData& info) {
 
-    if (calibrated){
-        switch (torque_mode){
+    if (info.calibrated){
+        switch (info.torque_mode){
             case 1: torqueMode = HIGH_T; break;
             case 2: torqueMode = MED_T; break;
             case 3: torqueMode = LOW_T; break;
             default: torqueMode = LOW_T; break;
         }
 
-        for (int i = 0; i < current_position; i++){
+        for (int i = 0; i < info.currentPosition; i++){
             //Update current position
-            current_position--;
+            info.currentPosition--;
             this->_minus(torqueMode);
         }
     }
