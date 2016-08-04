@@ -31,17 +31,11 @@ Axis::Axis(int dirPin, int stepPin, int resetPin, int sleepPin, int stopPin_plus
     pinMode(this->stopPin_minus, INPUT);
     pinMode(13, OUTPUT);
 
-    Serial.print("Motor ");
-    Serial.print(id);
-    Serial.println(" Initialized");
-
     calibrated = false;
 }
 
 Axis::~Axis(){
-    Serial.print("Motor ");
-    Serial.print(this->id);
-    Serial.println(" going offline.");
+    ;
 }
 
 void Axis::_plus(torqueMode_t torque_mode){
@@ -123,7 +117,8 @@ void Axis::Steps(int numSteps, int torque_mode, bool plus){
 
     digitalWrite(resetPin, LOW);
 
-    Serial.println("Moved");
+    Serial.print("Moved ");
+    Serial.println(numSteps);
 
     return;
 
@@ -218,6 +213,11 @@ String Axis::moveAlongAxis(int numSteps, int torque_mode, bool plus) {
 int Axis::getCurrentPosition() {
     return current_position;
 }
+
+char Axis::getID() {
+    return id;
+}
+
 
 void Axis::calibrateAxis(float dist_cm) {
     digitalWrite(13, HIGH);

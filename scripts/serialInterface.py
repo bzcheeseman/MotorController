@@ -17,6 +17,9 @@ logging.basicConfig(level=logging.DEBUG,
 
 class SerialRequestHandler(SocketServer.BaseRequestHandler):
 
+    no_ino = False
+    ino = None
+
     def __init__(self, request, client_address, server):
         self.logger = logging.getLogger('SerialRequestHandler')
         self.current_thread = " " + threading.current_thread().name
@@ -42,7 +45,7 @@ class SerialRequestHandler(SocketServer.BaseRequestHandler):
             return
         
         try:
-            self.ino = serial.Serial(port, 9600, timeout=30)
+            self.ino = serial.Serial(port, 9600, timeout=10)
             while not self.ino.writable():
                 self.logger.warning("Device not writable!")
         except serial.SerialException:
@@ -59,15 +62,16 @@ class SerialRequestHandler(SocketServer.BaseRequestHandler):
                     self.ino.close()
                     return
                 else:
-                    self.ino.write(to_send)
-                    self.logger.debug("Sent " + to_send + " to Arduino")
-                    while self.ino.inWaiting() > 0:
-                        line = self.ino.readline()
-                        if line[:8] == 'LOGGING':
-                            self.logger.debug(line)
-                        else:
-                            print line
+                    print to_send
+                    print self.ino.write(b'%s\n' % to_send)
+                    self.ino.flush()
+                    self.logger.debug("Sent '" + to_send + "' to Arduino on " + port)
+                    time.sleep(1)
+                    while self.ino.in_waiting > 0:
+                        line = self.ino.read(self.ino.in_waiting)
+                        print line
                     self.request.send("ACK " + to_send)
+                    self.ino.close()
         else:
             reply = "Invalid Request - Valid = {'calibrate <axis length>', 'step <steps>', 'distance <dist>', \
             'home', 'debug <steps>' - use sparingly!, 'switch <switch>', 'reset'}"
@@ -108,7 +112,7 @@ class SerialServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
         return SocketServer.TCPServer.handle_request(self)
 
     def finish_request(self, request, client_address):
-        print "Finished request from ", client_address, "...Terminating Connection"
+        print "Responding to requests from ", client_address
         return SocketServer.TCPServer.finish_request(self, request, client_address)
 
     def server_close(self):
