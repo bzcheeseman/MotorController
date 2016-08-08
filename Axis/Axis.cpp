@@ -121,6 +121,7 @@ void Axis::Steps(int numSteps, int torque_mode, bool plus){
 
     Serial.print("Moved ");
     Serial.println(numSteps);
+    Serial.println("");
 
     return;
 
