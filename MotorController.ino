@@ -7,7 +7,6 @@
  * @brief The Arudino file
  *
  * MotorController - Controlling basic NEMA-17 stepper motors with an arduino.
- * Written using RAII-style class allocation within each loop - should free all resources each loop iteration.
  *
  * Copyright (C) 2016  Aman LaChapelle
  *
@@ -65,9 +64,18 @@ void loop() {
     }
 
     if (command.length() > 0){
-        Serial.println(command);
+//        Serial.println(command);
         command.toLowerCase();
-        if (command.substring(0, 10) == "calibrated"){
+        if (command.substring(0, 4) == "who"){
+            Serial.println("MotorController");
+            Serial.print("Axes ");
+            for (int i = 0; i < 3; i++){
+                Serial.print(steppers[i].getID());
+                Serial.print(" ");
+            }
+            Serial.println("initialized");
+        }
+        else if (command.substring(0, 10) == "calibrated"){
             Serial.println(chooseInfo(command[11]).calibrated);
         }
         else if (command.substring(0, 9) == "calibrate"){
@@ -143,7 +151,7 @@ void loop() {
         else{
             Serial.println("LOGGING: Unknown command");
             Serial.println("Unknown or Unimplemented command!\n "
-                                   "Commands include: {'calibrate', 'distance', 'step', 'home', 'position', 'debug' <use sparingly and with caution> }");
+                                   "Commands include: {'who', 'calibrate', 'distance', 'step', 'home', 'position', 'debug' <use sparingly and with caution> }");
         }
 
 
