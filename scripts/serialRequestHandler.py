@@ -69,11 +69,12 @@ def HandleCommands(arduino, commands):
 '''
 Allows for 2 lines of header at the top of the file for description.  Assumes a .csv file of commands.
 '''
-def ReadCommands(filename):
+def ReadCommands(arduino, filename):
     commands = []
     with open(filename, "r") as f:
         for line in f:
             commands.append(line)
+    HandleCommands(arduino, commands)
 
 
 
