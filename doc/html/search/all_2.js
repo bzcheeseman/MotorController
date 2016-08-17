@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['calibrateaxis',['calibrateAxis',['../class_axis.html#a10e9656a653ab3bfc4be2d843aba88cd',1,'Axis']]],
-  ['calibrated',['calibrated',['../class_axis.html#a848769a1cde387fc279bd93e8384c3cc',1,'Axis']]],
-  ['current_5fposition',['current_position',['../class_axis.html#a2eaa1c33cfeca309091d7b825266ddb0',1,'Axis']]]
+  ['calibrateaxis',['calibrateAxis',['../class_axis.html#a9d6aa3670d1540cb7379c35de357f88f',1,'Axis']]],
+  ['calibrated',['calibrated',['../structpass_data.html#a69df738da4311de48f21e8f48607b415',1,'passData']]],
+  ['currentposition',['currentPosition',['../structpass_data.html#a676e0357a358a33d2f9caf3d01e6d318',1,'passData']]]
 ];

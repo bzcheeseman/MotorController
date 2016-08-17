@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['movealongaxis',['moveAlongAxis',['../class_axis.html#a80ada22c7a59d0c1b477ab5c5048bc97',1,'Axis']]],
-  ['movedistance',['moveDistance',['../class_axis.html#ac09146fff31b627323fbca7a2ce98ce0',1,'Axis']]]
+  ['movealongaxis',['moveAlongAxis',['../class_axis.html#ac63994a213d896d33f8c75b96e0aee4a',1,'Axis']]],
+  ['movedistance',['moveDistance',['../class_axis.html#aff3d15990aad859d598db88ed668d2e3',1,'Axis']]]
 ];
