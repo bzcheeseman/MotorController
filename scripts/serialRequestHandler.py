@@ -5,6 +5,7 @@ import serial
 import threading
 import pandas as pd
 import numpy as np
+import time
 
 logging.basicConfig(level=logging.DEBUG,
                     format = '%(asctime)s %(threadName)s %(name)s %(levelname)s %(message)s',
@@ -13,6 +14,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 class arduino(object):
     def __init__(self, port, baud=9600, timeout=10):
+        self.port = port
         self.logger = logging.getLogger("Arduino")
         try:
             self.ino = serial.Serial(port, baud, timeout=timeout)
@@ -34,7 +36,7 @@ class arduino(object):
                 else:
                     self.ino.write(b'%s\n' % to_send)
                     self.ino.flush()
-                    self.logger.info("Sent '" + to_send + "' to Arduino on " + port)
+                    self.logger.info("Sent '" + to_send + "' to Arduino on " + self.port)
                     time.sleep(1)
                     while self.ino.in_waiting > 0:
                         line = self.ino.read(self.ino.in_waiting)
