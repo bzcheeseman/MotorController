@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 #include "Axis/Axis.hpp"
+#include <AccelStepper.h>
 
 /**
  * @file MotorController.ino
