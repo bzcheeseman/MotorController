@@ -1,10 +1,6 @@
 import logging
-import sys
-import os
 import serial
 import threading
-import pandas as pd
-import numpy as np
 import time
 
 logging.basicConfig(level=logging.DEBUG,
@@ -47,8 +43,6 @@ class arduino(object):
                 self.logger.info("No Arduino connected")
                 return 1
         else:
-            reply = "Invalid Request - Valid = {'calibrate <axis length>', 'step <steps>', 'distance <dist>', \
-            'home', 'debug <steps>' - use sparingly!}"
             self.logger.warning("Request: " + cmd)
             self.logger.warning("INVALID REQUEST")
             if self.ino:
@@ -57,10 +51,15 @@ class arduino(object):
                 self.logger.info("No Arduino connected")
             return 1
 
+    def run(self, cmd, lock):
+        with lock:
+            self.handle(cmd)
+
 def HandleCommands(arduino, commands):
     ts = []
+    l = threading.RLock()
     for command in commands:
-        ts.append(threading.Thread(name=command, target=arduino.handle, args = [command]))
+        ts.append(threading.Thread(name=command, target=arduino.run, args = [command, l]))
 
     for t in ts:
         t.start()
@@ -69,14 +68,34 @@ def HandleCommands(arduino, commands):
         t.join()
 
 '''
-Allows for 2 lines of header at the top of the file for description.  Assumes a .csv file of commands.
+Allows for <header> lines of header at the top of the file for description.  Assumes a .csv file of commands.
 '''
-def ReadCommands(arduino, filename):
+def ReadCommands(arduino, filename, header):
     commands = []
+    out_commands = []
+    i = 0
     with open(filename, "r") as f:
         for line in f:
-            commands.append(line)
-    HandleCommands(arduino, commands)
+            if i >= header:
+                commands.append(line.strip("\n"))
+            i += 1
+    for command in commands:
+        if command[0] == "D":
+            c = command.split(" ")[1:]
+            for block in c:
+                axis = block[0]
+                distance = block[1:]
+
+                out_commands.append("debug {} {}".format(axis, distance))
+        else:
+            c = command.split(" ")
+            for block in c:
+                axis = block[0]
+                distance = block[1:]
+
+                out_commands.append("distance {} {}".format(axis, distance))
+
+    HandleCommands(arduino, out_commands)
 
 
 
@@ -86,5 +105,8 @@ if __name__ == '__main__':
     ar = arduino("/dev/tty0")
     #multiple commands
     HandleCommands(ar, ["distance 5", "sdlfkj", "debug z 400"])
+    ReadCommands(ar, "../distance_command_list/sample.txt", 0)
     #single command
     ar.handle("debug z 1000")
+
+
