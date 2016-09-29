@@ -18,3 +18,11 @@ arduino
 avr-g++
 doxygen
 ```
+
+NOTE: This project is basically moot at this point - it was created as 
+a possible alternative to Marlin because we couldn't get it to work
+but we were able to fix it up and so I'm going to call this project
+for now, and maybe come back to it later with some other fun things.
+
+Could be fun to integrate ML somehow, but that will either be another
+project or will just happen later on.
