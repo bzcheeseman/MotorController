@@ -20,10 +20,7 @@
     </ADDITIONAL_GENERATION_ENVIRONMENT>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd8a5912-ca30-463e-8346-02c5b7870f28" name="Default" comment="deleted the gcode compiler&#10;">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/GCodeCompiler/compiler.c" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/GCodeCompiler/compiler.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/index.html" afterPath="" />
+    <list default="true" id="cd8a5912-ca30-463e-8346-02c5b7870f28" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MotorController.iws" />
@@ -44,20 +41,43 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MotorController.ino" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MotorController.ino" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MotorController.ino">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="585">
+              <caret line="39" column="23" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Axis.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Axis/Axis.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-975">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Axis.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Axis/Axis.cpp">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="405">
+                <caret line="27" column="37" selection-start-line="27" selection-start-column="37" selection-end-line="27" selection-end-column="37" />
+                <folding />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-975">
+            <state relative-caret-position="0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -94,6 +114,7 @@
         <option value="$PROJECT_DIR$/distance_command_list/sample.txt" />
         <option value="$PROJECT_DIR$/scripts/serialRequestHandler.py" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -192,7 +213,7 @@
       <recent name="$PROJECT_DIR$/docs" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.doc">
+  <component name="RunManager" selected="Application.docs">
     <configuration default="true" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" PASS_PARENT_ENVS_2="true" TEST_MODE="SUITE_TEST">
       <envs />
       <method />
@@ -375,7 +396,7 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="docs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="MotorController" TARGET_NAME="docs" CONFIG_NAME="Debug">
+    <configuration default="false" name="docs" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="MotorController" TARGET_NAME="docs" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="MotorController" RUN_TARGET_NAME="MotorController">
       <envs />
       <method />
     </configuration>
@@ -431,7 +452,7 @@
       <workItem from="1471730047648" duration="191000" />
       <workItem from="1471730468113" duration="19000" />
       <workItem from="1471730718242" duration="247000" />
-      <workItem from="1475192624163" duration="56000" />
+      <workItem from="1475192624163" duration="350000" />
     </task>
     <task id="LOCAL-00001" summary="Added distance-based functionality, also included a python script for logging which will hopefully work.">
       <created>1469554660282</created>
@@ -545,11 +566,25 @@
       <option name="project" value="LOCAL" />
       <updated>1471730944916</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="deleted the gcode compiler stuff - wasn't using it anyway&#10;&#10;Project is mostly moot now - running the printer with Marlin (fixed the earlier problems with the interface) so it works much better now.&#10;&#10;Leaving this up as a monument to previous work done.">
+      <created>1475192741542</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1475192741542</updated>
+    </task>
+    <task id="LOCAL-00018" summary="deleted the gcode compiler stuff - wasn't using it anyway&#10;&#10;Project is mostly moot now - running the printer with Marlin (fixed the earlier problems with the interface) so it works much better now.&#10;&#10;Leaving this up as a monument to previous work done, and in case I want to do more later.">
+      <created>1475192907065</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1475192907065</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15992000" />
+    <option name="totallyTimeSpent" value="16286000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -557,23 +592,23 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3060241" sideWeight="0.49753347" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37349397" sideWeight="0.5024665" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Serial Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40722892" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3060241" sideWeight="0.49753347" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -619,14 +654,15 @@
     <MESSAGE value="idk wtf is happening with the thing" />
     <MESSAGE value="UNTESTED - HOPEFULLY IT STILL WORKS" />
     <MESSAGE value="UNTESTED - HOPEFULLY IT STILL WORKS&#10;&#10;added html files for the docs folder" />
-    <option name="LAST_COMMIT_MESSAGE" value="UNTESTED - HOPEFULLY IT STILL WORKS&#10;&#10;added html files for the docs folder" />
+    <MESSAGE value="deleted the gcode compiler stuff - wasn't using it anyway&#10;&#10;Project is mostly moot now - running the printer with Marlin (fixed the earlier problems with the interface) so it works much better now.&#10;&#10;Leaving this up as a monument to previous work done." />
+    <MESSAGE value="deleted the gcode compiler stuff - wasn't using it anyway&#10;&#10;Project is mostly moot now - running the printer with Marlin (fixed the earlier problems with the interface) so it works much better now.&#10;&#10;Leaving this up as a monument to previous work done, and in case I want to do more later." />
+    <option name="LAST_COMMIT_MESSAGE" value="deleted the gcode compiler stuff - wasn't using it anyway&#10;&#10;Project is mostly moot now - running the printer with Marlin (fixed the earlier problems with the interface) so it works much better now.&#10;&#10;Leaving this up as a monument to previous work done, and in case I want to do more later." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/GCodeCompiler/compiler.c" />
     <entry file="file://$PROJECT_DIR$/Axis/Axis.cpp" />
     <entry file="file://$PROJECT_DIR$/Axis/Axis.cpp" />
     <entry file="file://$PROJECT_DIR$/GCodeCompiler/compiler.h" />
@@ -670,21 +706,12 @@
     <entry file="file://$PROJECT_DIR$/scripts/serialRequestHandler.py" />
     <entry file="file://$PROJECT_DIR$/docs/LICENSE.txt" />
     <entry file="file://$PROJECT_DIR$/LICENSE" />
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt" />
     <entry file="file://$PROJECT_DIR$/docs/params.json" />
     <entry file="file://$PROJECT_DIR$/docs/index.html" />
     <entry file="file://$PROJECT_DIR$/.idea/serialmonitor_settings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MotorController.ino">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -700,6 +727,33 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-975">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="405">
+            <caret line="27" column="37" selection-start-line="27" selection-start-column="37" selection-end-line="27" selection-end-column="37" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MotorController.ino">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="39" column="23" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
           <folding />
         </state>
       </provider>
